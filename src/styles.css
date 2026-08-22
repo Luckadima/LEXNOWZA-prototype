@@ -16,7 +16,7 @@ select{
 }
 
 /* ==============================
-   MAIN APP LAYOUT
+   MAIN LAYOUT
 ============================== */
 
 .shell{
@@ -81,6 +81,7 @@ aside button{
   cursor:pointer;
   font-size:12px;
   margin:2px 0;
+  width:100%;
 }
 
 aside button.active{
@@ -88,6 +89,7 @@ aside button.active{
   color:#fff;
 }
 
+/* Desktop: portal/logout stay at bottom */
 .bottom{
   margin-top:auto;
 }
@@ -194,7 +196,7 @@ header{
 }
 
 /* ==============================
-   MATTER / CARDS
+   CARDS / MATTERS
 ============================== */
 
 .matter,
@@ -339,7 +341,7 @@ h3{
 }
 
 /* ==============================
-   UPDATE PAGE
+   UPDATE DETAILS
 ============================== */
 
 .back{
@@ -567,7 +569,7 @@ h3{
 }
 
 /* ==============================
-   AUTH / LOGIN
+   LOGIN / AUTH
 ============================== */
 
 .auth{
@@ -649,7 +651,7 @@ h3{
 }
 
 /* ==============================
-   FIRM DASHBOARD
+   LAW FIRM DASHBOARD
 ============================== */
 
 .stats{
@@ -750,7 +752,7 @@ h3{
 }
 
 /* ==============================
-   MOBILE MENU
+   MOBILE MENU BUTTON
 ============================== */
 
 .mobile-menu{
@@ -781,6 +783,11 @@ h3{
     display:flex !important;
   }
 
+  /*
+   Mobile sidebar starts outside screen.
+   Opening the menu changes left to 0.
+  */
+
   .shell aside{
     display:flex !important;
     flex-direction:column;
@@ -792,7 +799,13 @@ h3{
     bottom:0;
 
     width:280px;
+
+    /*
+     100dvh works better than 100vh
+     on mobile browsers with browser bars.
+    */
     height:100vh;
+    height:100dvh;
 
     background:#092448;
 
@@ -802,9 +815,15 @@ h3{
 
     transition:left .25s ease;
 
+    /*
+     Allow the sidebar itself to scroll.
+    */
     overflow-y:auto;
+    overflow-x:hidden;
 
-    padding:20px 13px;
+    -webkit-overflow-scrolling:touch;
+
+    padding:20px 13px 25px;
   }
 
   .shell aside.mobile-open{
@@ -812,15 +831,37 @@ h3{
     transform:none !important;
   }
 
+  /*
+   IMPORTANT:
+   Desktop uses margin-top:auto to push
+   these buttons to the bottom.
+
+   On mobile we remove that behaviour,
+   meaning Law firm portal and Log out
+   appear directly underneath Help Centre.
+  */
+
+  .shell aside .bottom{
+    margin-top:12px;
+
+    padding-top:12px;
+    padding-bottom:20px;
+
+    border-top:1px solid rgba(255,255,255,.15);
+
+    flex-shrink:0;
+  }
+
+  .shell aside .bottom button{
+    width:100%;
+  }
+
   .mobile-overlay{
     display:block;
 
     position:fixed;
 
-    top:0;
-    right:0;
-    bottom:0;
-    left:0;
+    inset:0;
 
     background:rgba(0,20,45,.45);
 
@@ -864,10 +905,6 @@ h3{
     height:68px;
   }
 
-  header > span{
-    font-size:13px;
-  }
-
   .header-left span{
     font-size:13px;
   }
@@ -907,9 +944,15 @@ h3{
     height:38px;
   }
 
+  /*
+   Sidebar takes most of phone width,
+   while still leaving some of the
+   dark overlay visible.
+  */
+
   .shell aside{
-    width:275px;
-    left:-280px;
+    width:min(82vw,300px);
+    left:-310px;
   }
 
   .shell aside.mobile-open{
