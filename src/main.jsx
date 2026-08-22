@@ -5,7 +5,96 @@ function Lang({lang,setLang}){return <div className="lang"><Globe2 size={15}/><s
 function App(){const[lang,setLang]=useState('en'),[mode,setMode]=useState('client'),[screen,setScreen]=useState('login'),[client,setClient]=useState('dash'),[firm,setFirm]=useState('overview'),[q,setQ]=useState(''),[msgs,setMsgs]=useState([]);const t=T[lang];if(screen==='login')return <Auth t={t} lang={lang} setLang={setLang} next={()=>setScreen('otp')}/>;if(screen==='otp')return <Otp t={t} lang={lang} setLang={setLang} next={()=>setScreen('client')}/>;if(mode==='firm')return <Firm t={t} lang={lang} setLang={setLang} screen={firm} setScreen={setFirm} exit={()=>{setMode('client');setClient('dash')}}/>;return <Client t={t} lang={lang} setLang={setLang} screen={client} setScreen={setClient} q={q} setQ={setQ} msgs={msgs} ask={x=>{x=x||q;if(!x.trim())return;let a=T[lang].fallback;if(x.toLowerCase().includes('bring')||x.includes('phathe')||x.includes('saambring'))a=t.a1;if(x.toLowerCase().includes('change')||x.toLowerCase().includes('court date')||x.includes('shints')||x.includes('verander'))a=t.a2;setMsgs(m=>[...m,{u:x},{a,esc:a===t.a2||a===t.fallback}]);setQ('')}} modeFirm={()=>setMode('firm')} logout={()=>setScreen('login')}/>}
 function Auth({t,lang,setLang,next}){return <div className="auth"><div className="card"><div className="logo">L</div><b>LEXNOWZA</b><h1>{t.welcome}</h1><p>{t.secureAccess}</p><div className="demo">{t.demo}</div><input placeholder="Enter you phone number"/><button className="primary" onClick={next}>{t.continue}<ArrowRight size={16}/></button><Lang lang={lang} setLang={setLang}/></div></div>}
 function Otp({t,lang,setLang,next}){return <div className="auth"><div className="card"><div className="logo">L</div><b>LEXNOWZA</b><h1>{t.secureAccess}</h1><p>{t.otp} <strong>060 296 4176</strong></p><div className="otp">{[2,5,7,9,0,4].map((x,i)=><input key={i} value={x} readOnly/>)}</div><button className="primary" onClick={next}>{t.continue}<ArrowRight size={16}/></button><button className="link">{t.resend}</button><Lang lang={lang} setLang={setLang}/></div></div>}
-function Layout({t,nav,active,setActive,children,firm=false,lang,setLang,footer}){return <div className="shell"><aside><div className="brand"><div className="logo small">L</div>LEXNOWZA</div><span className="label">{firm?t.firm:'CLIENT PORTAL'}</span>{nav.map(([k,I])=><button className={active===k?'active':''} onClick={()=>setActive(k)} key={k}><I size={17}/>{t[k]}</button>)}<div className="bottom">{footer}</div></aside><main><header><span>{firm?t.firm:t.dash}</span><Lang lang={lang} setLang={setLang}/></header>{children}</main></div>}
+function Layout({
+  t,
+  nav,
+  active,
+  setActive,
+  children,
+  firm = false,
+  lang,
+  setLang,
+  footer
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const changePage = (page) => {
+    setActive(page);
+    setMenuOpen(false);
+  };
+
+  return (
+    <div className="shell">
+
+      {menuOpen && (
+        <div
+          className="mobile-overlay"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      <aside className={menuOpen ? "mobile-open" : ""}>
+
+        <div className="brand">
+          <div className="logo small">L</div>
+          LEXNOWZA
+        </div>
+
+        <span className="label">
+          {firm ? t.firm : "CLIENT PORTAL"}
+        </span>
+
+        {nav.map(([k, I]) => (
+          <button
+            className={active === k ? "active" : ""}
+            onClick={() => changePage(k)}
+            key={k}
+          >
+            <I size={17}/>
+            {t[k]}
+          </button>
+        ))}
+
+        <div className="bottom">
+          {footer}
+        </div>
+
+      </aside>
+
+      <main>
+
+        <header>
+
+          <div className="header-left">
+
+            <button
+              className="mobile-menu"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open navigation"
+            >
+              <Menu size={22}/>
+            </button>
+
+            <span>
+              {firm ? t.firm : t.dash}
+            </span>
+
+          </div>
+
+          <Lang
+            lang={lang}
+            setLang={setLang}
+          />
+
+        </header>
+
+        {children}
+
+      </main>
+
+    </div>
+  );
+}
 function Client({t,lang,setLang,screen,setScreen,q,setQ,msgs,ask,modeFirm,logout}){
   return (
     <Layout
